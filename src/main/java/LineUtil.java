@@ -26,6 +26,7 @@ public class LineUtil {
     LineUtil(int[][] coordinates) {
         this.coordinates = coordinates;
 
+        //Устанавливаем ограничение на размер массива, минимум 2 точки.
         try {
             double x0 = coordinates[0][0];
             double y0 = coordinates[0][1];
@@ -33,6 +34,7 @@ public class LineUtil {
             double y1 = coordinates[1][1];
             double y = (y0-y1);
             double x = (x0-x1);
+            //Вычисляем коэффициенты k и b.
             if ((y > x && x > 0) || (y < x && x < 0)) {
                 this.k = y / x;
             } else {
@@ -46,35 +48,39 @@ public class LineUtil {
 
     }
 
-    boolean checkLineCoordinates() {
+    /**
+     * Функция определения принадлежности точки к прямой.
+     * @return возвращает true или false в зависимости от результата вычисления.
+     */
+    private boolean checkLineCoordinates() {
         for(int i = 2; i < coordinates.length; i++) {
             double y = Array.getDouble(coordinates[i],1);
             double x = Array.getDouble(coordinates[i],0);
             if (y != (x * k + b)) {
                 return false;
             }
+            //Для самопроверки
             System.out.println(y + "=" + (x*k+b));
 
         }
         return true;
     }
 
-    boolean getCheckCoord() {
-        return this.checkLineCoordinates();
-    }
+    /**
+     * Функция с предварительными условиями вызывающая метод определения
+     * принадлежности точки к прямой {@link LineUtil#checkLineCoordinates}.
+     * @return возвращает true или false в зависимости от результата вычисления.
+     */
+    public boolean isStraightLine() throws LineDataException {
 
-    public boolean isStraightLine(int[][] coordinates) {
-
-            for(int i = 0; i < coordinates.length; i++) {
-                if(Array.getLength(coordinates[i]) != 2){
-                    return false;
-                } else {
-                    for(int j = 0; j < coordinates.length; j++) {
-                        for(int ij = 0; ij < coordinates.length; ij++) {
+            for(int i = 0; i < this.coordinates.length; i++) {
+                //Массив с точкой должен содержать 2 координаты: x и y.
+                if(Array.getLength(this.coordinates[i]) != 2) throw new LineDataException("1");
+                    //Массив с точками не должен сожержать одинаковых точек
+                    for(int j = 0; j < this.coordinates.length; j++) {
+                        for(int ij = 0; ij < this.coordinates.length; ij++) {
                             if(j!=ij){
-                                if(Arrays.equals(coordinates[j],coordinates[ij])){
-                                    return false;
-                                }
+                                if(Arrays.equals(this.coordinates[j],this.coordinates[ij])) throw new LineDataException("Прямая линия не может пересекать одну точку более одного раза");
                             } else {
                                 continue;
                             }
@@ -83,10 +89,8 @@ public class LineUtil {
 
                     }
 
-                }
+
             }
-
-
-        return getCheckCoord();
+        return this.checkLineCoordinates();
     }
 }
