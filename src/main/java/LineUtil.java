@@ -1,5 +1,7 @@
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Класс Утилиты, которая определяет принадлежность точек к одной прямой со свойствами
@@ -73,21 +75,22 @@ public class LineUtil {
      */
     public boolean isStraightLine() throws LineDataException {
 
+        Set dataPointSet = new HashSet();
             for(int i = 0; i < this.coordinates.length; i++) {
                 //Массив с точкой должен содержать 2 координаты: x и y.
-                if(Array.getLength(this.coordinates[i]) != 2) throw new LineDataException("1");
-                    //Массив с точками не должен сожержать одинаковых точек
-                    for(int j = 0; j < this.coordinates.length; j++) {
-                        for(int ij = 0; ij < this.coordinates.length; ij++) {
-                            if(j!=ij){
-                                if(Arrays.equals(this.coordinates[j],this.coordinates[ij])) throw new LineDataException("Прямая линия не может пересекать одну точку более одного раза");
-                            } else {
-                                continue;
-                            }
+                if(Array.getLength(this.coordinates[i]) != 2) throw new LineDataException("Точка " + (i+1) + " имеет" +
+                        ", больше двух координат!");
+                //Массив с точками не должен сожержать одинаковых точек(используем хэш-сет)
+                System.out.println(Arrays.toString(this.coordinates[i]));
+                if(!dataPointSet.add(Arrays.toString(this.coordinates[i]))) throw new LineDataException("Прямая линия" +
+                        " не может пересекать одну точку более одного раза!");
+                else {
+                    continue;
+                }
 
-                        }
 
-                    }
+
+
 
 
             }
